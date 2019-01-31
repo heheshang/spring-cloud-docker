@@ -349,23 +349,23 @@ docker.io   docker.io/mashape/jenkins                        Just a jenkins imag
 ```
 
 ## 参考文章：
-[**springboot输出log到graylog2**](https://segmentfault.com/a/1190000006857382)
+- 1 [**springboot输出log到graylog2**](https://segmentfault.com/a/1190000006857382)
 
-[**docker ELK 中安装插件**](https://blog.csdn.net/a243293719/article/details/82021823)
+- 2 [**docker ELK 中安装插件**](https://blog.csdn.net/a243293719/article/details/82021823)
 
-[**Docker安装graylog和详解**](https://blog.csdn.net/u012954706/article/details/79592060)
+- 3 [**Docker安装graylog和详解**](https://blog.csdn.net/u012954706/article/details/79592060)
 
-[**idea 中配置 docker**](https://blog.csdn.net/jackcheng1117/article/details/83080303)
+- 4 [**idea 中配置 docker**](https://blog.csdn.net/jackcheng1117/article/details/83080303)
 
-[**安装Docker-Compose**](https://www.cnblogs.com/YatHo/p/7815400.html)
+- 5 [**安装Docker-Compose**](https://www.cnblogs.com/YatHo/p/7815400.html)
 
-[**centos7 下安装docker-compose 下报错**](https://blog.csdn.net/hillwooda/article/details/80027976)
+- 6 [**centos7 下安装docker-compose 下报错**](https://blog.csdn.net/hillwooda/article/details/80027976)
 
-[**解决执行脚本文本格式不正确**](https://blog.csdn.net/u012453843/article/details/69803244/)
+- 7 [**解决执行脚本文本格式不正确**](https://blog.csdn.net/u012453843/article/details/69803244/)
 
-[**解决docker下找不到 elasticsearch:latest**](https://blog.csdn.net/weixin_40161254/article/details/85795941)
+- 8 [**解决docker下找不到 elasticsearch:latest**](https://blog.csdn.net/weixin_40161254/article/details/85795941)
 
-- **要获取所有容器名称及其IP地址只需一个命令**
+## **要获取所有容器名称及其IP地址只需一个命令**
 ```bash
 docker inspect -f '{{.Name}} - {{.NetworkSettings.IPAddress }}' $(docker ps -aq)
 #docker-compose命令
@@ -373,7 +373,7 @@ docker inspect -f '{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}}
 ```
 
 
-- 显示所有容器IP地址：
+## 显示所有容器IP地址：
 ```bash
 docker inspect --format='{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps -aq)
 ```
@@ -409,7 +409,7 @@ public class SpringNacosClientApplication {
 }
 ```
 
-# docker-compose.yml 配置
+## docker-compose.yml 配置
 ```yaml
 version: "2"
 services:

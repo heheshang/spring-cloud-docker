@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.spring.docker</groupId>
+    <artifactId>docker-spring-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+
+    <properties>
+        <java.version>1.8</java.version>
+        <spring.cloud.version>Finchley.RELEASE</spring.cloud.version>
+        <spring.cloud.alibaba>0.2.1.RELEASE</spring.cloud.alibaba>
+        <docker.image.prefix>${project.artifactId}</docker.image.prefix>
+       <!-- log4j2-->
+        <logger.group>spring-docker</logger.group>
+        <logger.file.path>${log4j.path}/${logger.group}/${project.artifactId}</logger.file.path>
+
+        <logger.format>"%d{[yyyy-MM-dd HH:mm:ss,SSS]}-%clr{[%p]}{cyan}-%clr{[%t][%c{1.}.%M]:[%L]}:%m%n"</logger.format>
+        <logger.info.file>${logger.file.path}/${project.artifactId}.log</logger.info.file>
+        <logger.error.file>${logger.file.path}/error-${project.artifactId}.log</logger.error.file>
+        <logger.sql.file>${logger.file.path}/sql.log</logger.sql.file>
+        <logger.gc.file>${log4j.path}/${logger.group}/gc/${project.artifactId}.log</logger.gc.file>
+        <!--log4j2-->
+    </properties>
+
+
+    <modules>
+        <module>spring-nacos-server</module>
+        <module>spring-nacos-client</module>
+    </modules>
+
+    <parent>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-parent</artifactId>
+        <version>Finchley.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring.cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${spring.cloud.alibaba}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <profiles>
+        <profile>
+            <id>local</id>
+            <properties>
+                <profileActive>local</profileActive>
+                <log4j.level>DEBUG</log4j.level>
+                <log4j.path>../logs</log4j.path>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+
+        <profile>
+            <id>dev</id>
+            <properties>
+                <profileActive>dev</profileActive>
+                <log4j.level>info</log4j.level>
+                <log4j.path>/data/logs</log4j.path>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>test</id>
+            <properties>
+                <profileActive>test</profileActive>
+                <log4j.level>info</log4j.level>
+                <log4j.path>/data/logs</log4j.path>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <profileActive>prod</profileActive>
+                <log4j.level>info</log4j.level>
+                <log4j.path>/data/logs</log4j.path>
+            </properties>
+        </profile>
+    </profiles>
+    <build>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-jar</id>
+                        <!--    <configuration>
+                                <classifier>${branch}</classifier>
+                            </configuration>-->
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

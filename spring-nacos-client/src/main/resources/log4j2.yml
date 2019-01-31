@@ -1,0 +1,82 @@
+Configuration:
+  status: debug
+
+
+
+  Appenders:
+    Console:  #输出到控制台
+      name: CONSOLE
+      target: SYSTEM_OUT
+      ThresholdFilter:
+        level: @log4j.level@ # “sys:”表示：如果VM参数中没指定这个变量值，则使用本文件中定义的缺省全局变量值
+        onMatch: ACCEPT
+        onMismatch: DENY
+      PatternLayout:
+        pattern: @logger.format@
+
+    RollingFile: # 输出到文件，超过128MB归档
+
+      - name: APP_INFO
+        ignoreExceptions: false
+        fileName: @logger.info.file@
+        filePattern: "@logger.file.path@/$${date:yyyy-MM}/@project.artifactId@-%d{yyyy-MM-dd}-%i.log.gz"
+        PatternLayout:
+          pattern: @logger.format@
+        Policies:
+          SizeBasedTriggeringPolicy:
+            size: "128 MB"
+        DefaultRolloverStrategy:
+          max: 1000
+
+      - name: APP_ERROR
+        ignoreExceptions: false
+        fileName:  @logger.error.file@
+        filePattern: "@logger.file.path@/$${date:yyyy-MM}/@project.artifactId@-%d{yyyy-MM-dd}-%i.error-log.gz"
+        ThresholdFilter:
+          level: warn
+        PatternLayout:
+          pattern: @logger.format@
+        Policies:
+          SizeBasedTriggeringPolicy:
+            size: "128m"
+        DefaultRolloverStrategy:
+            max: 1000
+
+      - name: SQL
+        ignoreExceptions: false
+        fileName: @logger.sql.file@
+        filePattern: "@logger.file.path@/$${date:yyyy-MM}/@project.artifactId@-%d{yyyy-MM-dd}-%i.sql-log.gz"
+        PatternLayout:
+          pattern: @logger.format@
+        Policies:
+          SizeBasedTriggeringPolicy:
+            size: "128m"
+        DefaultRolloverStrategy:
+            max: 1000
+
+
+
+  Loggers:
+    Root:
+      level: @log4j.level@
+      AppenderRef:
+        - ref: CONSOLE
+        - ref: APP_INFO
+        - ref: APP_ERROR
+        - ref: GELF
+#        - ref: SQL
+    Logger: # 为com.xjj包配置特殊的Log级别，方便调试
+      - name: com.distributed.transaction
+        additivity: false
+        level: @log4j.level@
+        AppenderRef:
+          - ref: CONSOLE
+          - ref: APP_INFO
+          - ref: APP_ERROR
+#          - ref: SQL
+
+      - name: org.springframework
+        level: info
+        AppenderRef:
+          - ref: APP_INFO
+

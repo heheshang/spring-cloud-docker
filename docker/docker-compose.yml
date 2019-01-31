@@ -1,0 +1,72 @@
+version: "2"
+services:
+  nacos:
+    image: paderlol/nacos:latest
+    container_name: nacos-standalone
+    environment:
+      - PREFER_HOST_MODE=hostname
+      - MODE=standalone
+      - TZ=Asia/Shanghai
+    ports:
+      - "8848:8848"
+    volumes:
+      - ./logs:/home/nacos/logs
+  elasticsearch:
+    image: elasticsearch:5.1.1
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    command: elasticsearch
+    environment:
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+      - TZ=Asia/Shanghai
+  logstash:
+    image: logstash:5.1.1
+    ports:
+      - "12201:12201/udp"
+    command: -e 'input { gelf { host => "0.0.0.0" port => 12201 } }
+      output { elasticsearch { hosts => ["elasticsearch"] } }'
+    links:
+      - elasticsearch
+    depends_on:
+      - elasticsearch
+    environment:
+      - TZ=Asia/Shanghai
+  kibana:
+    image: kibana:5.1.1
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - TZ=Asia/Shanghai
+    links:
+      - elasticsearch
+      - logstash
+    depends_on:
+      - logstash
+  spring-nacos-server:
+    image: spring-cloud-docker/spring-nacos-server
+    depends_on:
+      - nacos
+      - logstash
+    links:
+      - nacos
+      - logstash
+    ports:
+      - "8001:8001"
+    environment:
+      - TZ=Asia/Shanghai
+  spring-nacos-client:
+    image: spring-cloud-docker/spring-nacos-client
+    depends_on:
+      - nacos
+      - logstash
+    environment:
+      - TZ=Asia/Shanghai
+    links:
+      - nacos
+      - logstash
+    ports:
+      - "8002:8002"
+    extra_hosts:
+      - "dockernet:${EXTERNAL_IP}"

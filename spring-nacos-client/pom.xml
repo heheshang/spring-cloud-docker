@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.spring.docker</groupId>
+        <artifactId>docker-spring-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+
+    <groupId>com.nacos.client</groupId>
+    <artifactId>spring-nacos-client</artifactId>
+    <name>spring-nacos-client</name>
+    <packaging>jar</packaging>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>spring-boot-starter-logging</artifactId>
+                    <groupId>org.springframework.boot</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/biz.paluch.logging/logstash-gelf -->
+        <dependency>
+            <groupId>biz.paluch.logging</groupId>
+            <artifactId>logstash-gelf</artifactId>
+            <version>1.12.0</version>
+        </dependency>
+
+        <!-- Log4j2 异步支持 -->
+        <dependency>
+            <groupId>com.lmax</groupId>
+            <artifactId>disruptor</artifactId>
+            <version>3.3.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-log4j2</artifactId>
+        </dependency>
+
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+            <!-- <plugin>
+                 <groupId>com.spotify</groupId>
+                 <artifactId>dockerfile-maven-plugin</artifactId>
+                 <version>1.3.7</version>
+                 &lt;!&ndash;放开这块注释，则运行mvn deploy命令就会打包镜像<executions>&ndash;&gt;
+                 &lt;!&ndash;<execution>&ndash;&gt;
+                 &lt;!&ndash;<id>default</id>&ndash;&gt;
+                 &lt;!&ndash;<goals>&ndash;&gt;
+                 &lt;!&ndash;<goal>build</goal>&ndash;&gt;
+                 &lt;!&ndash;<!–<goal>push</goal>–>&ndash;&gt;
+                 &lt;!&ndash;</goals>&ndash;&gt;
+                 &lt;!&ndash;</execution>&ndash;&gt;
+                 &lt;!&ndash;</executions>&ndash;&gt;
+                 <configuration>
+                     <repository>${docker.image.prefix}/${project.artifactId}</repository>
+                     <buildArgs>
+                         <JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
+                     </buildArgs>
+                 </configuration>
+             </plugin>-->
+        </plugins>
+    </build>
+
+</project>

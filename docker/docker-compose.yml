@@ -19,7 +19,7 @@ services:
     command: elasticsearch
     environment:
       ES_JAVA_OPTS: "-Xms512m -Xmx512m"
-      - TZ=Asia/Shanghai
+      TZ: "Asia/Shanghai"
   logstash:
     image: logstash:5.1.1
     ports:

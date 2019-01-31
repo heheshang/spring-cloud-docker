@@ -347,26 +347,172 @@ docker.io   docker.io/mashape/jenkins                        Just a jenkins imag
 ```
 [root@docker-node ~]# docker pull docker.io/jenkins
 ```
-```
-https://blog.csdn.net/jackcheng1117/article/details/83080303
-https://www.cnblogs.com/YatHo/p/7815400.html
-https://blog.csdn.net/hillwooda/article/details/80027976
 
-https://blog.csdn.net/u012453843/article/details/69803244/
+## 参考文章：
+[**idea 中配置 docker**](https://blog.csdn.net/jackcheng1117/article/details/83080303)
 
-https://blog.csdn.net/weixin_40161254/article/details/85795941
-```
-要获取所有容器名称及其IP地址只需一个命令
+[**安装Docker-Compose**](https://www.cnblogs.com/YatHo/p/7815400.html)
 
-```
+[**centos7 下安装docker-compose 下报错**](https://blog.csdn.net/hillwooda/article/details/80027976)
+
+[**解决执行脚本文本格式不正确**](https://blog.csdn.net/u012453843/article/details/69803244/)
+
+[**解决docker下找不到 elasticsearch:latest**](https://blog.csdn.net/weixin_40161254/article/details/85795941)
+
+- **要获取所有容器名称及其IP地址只需一个命令**
+```bash
 docker inspect -f '{{.Name}} - {{.NetworkSettings.IPAddress }}' $(docker ps -aq)
 #docker-compose命令
 docker inspect -f '{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps -aq)
 ```
 
 
-显示所有容器IP地址：
-```
+- 显示所有容器IP地址：
+```bash
 docker inspect --format='{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps -aq)
 ```
+## 注意事项
+- 1 由于本机是windows 所以*.sh 和*.yml文件 的格式为doc 在 Linux 中编辑文件的时候 使用如下命令更改
 
+```bash
+:set ff=unix
+```
+- 2 添加nacos 配置 及pom 文件中修改 及启动main 中添加
+
+```properties
+spring.cloud.nacos.discovery.server-addr=192.168.61.137:8848
+```
+
+```xml
+
+   <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+```
+```java
+
+@EnableDiscoveryClient
+@SpringBootApplication
+public class SpringNacosClientApplication {
+
+    public static void main(String[] args) {
+
+        SpringApplication.run(SpringNacosClientApplication.class, args);
+    }
+}
+```
+
+# docker-compose.yml 配置
+```yaml
+version: "2"
+services:
+  nacos:
+    image: paderlol/nacos:latest
+    container_name: nacos-standalone
+    environment:
+      - PREFER_HOST_MODE=hostname
+      - MODE=standalone
+      - TZ=Asia/Shanghai #解决docker日志中日期问题
+    ports:
+      - "8848:8848"
+    volumes:
+      - ./logs:/home/nacos/logs
+  elasticsearch:
+    image: elasticsearch:5.1.1
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    command: elasticsearch
+    environment:
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+      TZ: "Asia/Shanghai"
+  logstash:
+    image: logstash:5.1.1
+    ports:
+      - "12201:12201/udp"
+    command: -e 'input { gelf { host => "0.0.0.0" port => 12201 } }
+      output { elasticsearch { hosts => ["elasticsearch"] } }'
+    links:
+      - elasticsearch
+    depends_on:
+      - elasticsearch
+    environment:
+      - TZ=Asia/Shanghai
+  kibana:
+    image: kibana:5.1.1
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - TZ=Asia/Shanghai
+    links:
+      - elasticsearch
+      - logstash
+    depends_on:
+      - logstash
+  spring-nacos-server:
+    image: spring-cloud-docker/spring-nacos-server
+    depends_on:
+      - nacos
+      - logstash
+    links:
+      - nacos
+      - logstash
+    ports:
+      - "8001:8001"
+    environment:
+      - TZ=Asia/Shanghai
+  spring-nacos-client:
+    image: spring-cloud-docker/spring-nacos-client
+    depends_on:
+      - nacos
+      - logstash
+    environment:
+      - TZ=Asia/Shanghai
+    links:
+      - nacos
+      - logstash
+    ports:
+      - "8002:8002"
+    extra_hosts:
+      - "dockernet:${EXTERNAL_IP}"
+```
+## 编写项目docker 构建命令
+```bash
+#!/usr/bin/env bash
+
+set -e
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# 执行docker build -t 文件时为主动找到 我们编写的DockerFile 文件并执行
+docker build -t "spring-cloud-docker/spring-nacos-server" $DIR/../spring-nacos-server
+docker build -t "spring-cloud-docker/spring-nacos-client" $DIR/../spring-nacos-client
+
+```
+## 编写DockerFile
+```dockerfile
+
+
+#指定java版本
+FROM java:8-jre
+
+# 宿主机 执行文件目录
+ENV SPRING_CLOUD_DOCKER_FILE target/spring-nacos-client-1.0-SNAPSHOT.jar
+
+# docker 虚拟机执行文件目录
+ENV SPRING_CLOUD_DOCKER_HOME /opt/spring-cloud-docker
+#对外暴露端口
+EXPOSE 8002
+
+#将宿主机文件copy 到 docker虚拟机中
+COPY $SPRING_CLOUD_DOCKER_FILE $SPRING_CLOUD_DOCKER_HOME/
+#COPY src/config/docker.json $SPRING_CLOUD_DOCKER_HOME/
+
+# 创建docker虚拟机文件位置
+WORKDIR $SPRING_CLOUD_DOCKER_HOME
+
+ENTRYPOINT ["sh", "-c"]
+
+CMD ["java    -jar spring-nacos-client-1.0-SNAPSHOT.jar"]
+```

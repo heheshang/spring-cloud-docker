@@ -349,6 +349,12 @@ docker.io   docker.io/mashape/jenkins                        Just a jenkins imag
 ```
 
 ## 参考文章：
+[**springboot输出log到graylog2**](https://segmentfault.com/a/1190000006857382)
+
+[**docker ELK 中安装插件**](https://blog.csdn.net/a243293719/article/details/82021823)
+
+[**Docker安装graylog和详解**](https://blog.csdn.net/u012954706/article/details/79592060)
+
 [**idea 中配置 docker**](https://blog.csdn.net/jackcheng1117/article/details/83080303)
 
 [**安装Docker-Compose**](https://www.cnblogs.com/YatHo/p/7815400.html)
@@ -516,3 +522,4 @@ ENTRYPOINT ["sh", "-c"]
 
 CMD ["java    -jar spring-nacos-client-1.0-SNAPSHOT.jar"]
 ```
+

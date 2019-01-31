@@ -45,9 +45,9 @@
 
         <!-- https://mvnrepository.com/artifact/biz.paluch.logging/logstash-gelf -->
         <dependency>
-            <groupId>biz.paluch.logging</groupId>
-            <artifactId>logstash-gelf</artifactId>
-            <version>1.12.0</version>
+            <groupId>org.graylog2.log4j2</groupId>
+            <artifactId>log4j2-gelf</artifactId>
+            <version>1.3.0</version>
         </dependency>
 
         <!-- Log4j2 异步支持 -->

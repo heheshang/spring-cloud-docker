@@ -408,18 +408,56 @@ public class SpringNacosClientApplication {
     }
 }
 ```
+## 编写docker 运行命令
+```bash
+#!/usr/bin/env bash
 
+set -e
+
+# TODO: set env for docker-machine in Windows and OSX
+
+
+# export docker-machine IP
+IP=127.0.0.1
+unamestr=`uname`
+if [[ "$unamestr" != 'Linux' ]]; then
+  # Set docker-machine IP
+  IP="$(docker-machine ip)"
+fi
+export EXTERNAL_IP=$IP
+
+# Get this script directory (to find yml from any directory)
+export DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Stop
+docker-compose -f $DIR/docker-compose.yml stop
+
+
+# Start container cluster
+# First start persistence and auth container and wait for it
+docker-compose -f $DIR/docker-compose.yml up -d elasticsearch  kibana graylog2 nacos
+echo "Waiting for persistence init..."
+sleep 30
+
+# Start other containers
+docker-compose -f $DIR/docker-compose.yml up
+
+```
 ## docker-compose.yml 配置
 ```yaml
 version: "2"
 services:
+  mongo:
+    image: mongo:latest
+    expose:
+    - "27017"
   nacos:
     image: paderlol/nacos:latest
     container_name: nacos-standalone
     environment:
       - PREFER_HOST_MODE=hostname
       - MODE=standalone
-      - TZ=Asia/Shanghai #解决docker日志中日期问题
+      - TZ=Asia/Shanghai
     ports:
       - "8848:8848"
     volumes:
@@ -433,18 +471,7 @@ services:
     environment:
       ES_JAVA_OPTS: "-Xms512m -Xmx512m"
       TZ: "Asia/Shanghai"
-  logstash:
-    image: logstash:5.1.1
-    ports:
-      - "12201:12201/udp"
-    command: -e 'input { gelf { host => "0.0.0.0" port => 12201 } }
-      output { elasticsearch { hosts => ["elasticsearch"] } }'
-    links:
-      - elasticsearch
-    depends_on:
-      - elasticsearch
-    environment:
-      - TZ=Asia/Shanghai
+
   kibana:
     image: kibana:5.1.1
     ports:
@@ -454,17 +481,41 @@ services:
       - TZ=Asia/Shanghai
     links:
       - elasticsearch
-      - logstash
+      - graylog2
     depends_on:
-      - logstash
+      - graylog2
+  # Graylog: https://hub.docker.com/r/graylog/graylog/
+  graylog2:
+    image: graylog/graylog:2.4.0-1
+    environment:
+      #CHANGE ME!
+      - GRAYLOG_PASSWORD_SECRET=somepasswordpepper
+      # Password: admin
+      - GRAYLOG_ROOT_PASSWORD_SHA2=8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
+      - GRAYLOG_WEB_ENDPOINT_URI=http://192.168.61.137:9000/api
+      - TZ=Asia/Shanghai
+    links:
+      - elasticsearch
+      - mongo
+    depends_on:
+      - elasticsearch
+      - mongo
+    ports:
+      - 9000:9000
+      - 514:514
+      - 514:514/udp
+      - 12201:12201
+      - 12201:12201/udp
+    command: -e 'input { gelf { host => "0.0.0.0" port => 12201 } }
+          output { elasticsearch { hosts => ["elasticsearch"] } }'
   spring-nacos-server:
     image: spring-cloud-docker/spring-nacos-server
     depends_on:
       - nacos
-      - logstash
+      - graylog2
     links:
       - nacos
-      - logstash
+      - graylog2
     ports:
       - "8001:8001"
     environment:
@@ -473,16 +524,17 @@ services:
     image: spring-cloud-docker/spring-nacos-client
     depends_on:
       - nacos
-      - logstash
+      - graylog2
     environment:
       - TZ=Asia/Shanghai
     links:
       - nacos
-      - logstash
+      - graylog2
     ports:
       - "8002:8002"
     extra_hosts:
       - "dockernet:${EXTERNAL_IP}"
+
 ```
 ## 编写项目docker 构建命令
 ```bash

@@ -10,7 +10,7 @@
 
     <appender name="logging" class="com.github.pukkaone.gelf.logback.GelfAppender">
         <graylogHost>192.168.61.137</graylogHost>
-        <originHost>spring-nacos-client</originHost>  <!--source,来源-->
+        <originHost>spring-nacos-server</originHost>  <!--source,来源-->
         <levelIncluded>true</levelIncluded>
         <locationIncluded>false</locationIncluded>
         <loggerIncluded>true</loggerIncluded>
@@ -18,7 +18,7 @@
         <mdcIncluded>false</mdcIncluded>
         <threadIncluded>false</threadIncluded>
         <facility>gelf-java</facility> <!--facility，随便写呗-->
-        <additionalField>application=spring-nacos-client</additionalField> <!--application，应用-->
+        <additionalField>application=spring-nacos-server</additionalField> <!--application，应用-->
         <additionalField>environment=dev</additionalField> <!--environment，环境-->
         <additionalField>managername=HealerJean</additionalField> <!--我自己加的managername，环境-->
 

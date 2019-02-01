@@ -1,6 +1,6 @@
 package com.nacos.client;
 
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -21,7 +21,7 @@ public class SpringNacosClientApplication {
     }
 
 
-    @Log4j2
+    @Slf4j
     @RestController
     static class TestController {
 

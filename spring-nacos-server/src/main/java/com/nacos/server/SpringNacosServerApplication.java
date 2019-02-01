@@ -2,7 +2,7 @@ package com.nacos.server;
 
 import com.nacos.server.elasticsearch.entity.Employee;
 import com.nacos.server.elasticsearch.repository.EmployeeRepository;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -22,7 +22,7 @@ public class SpringNacosServerApplication {
     }
 
 
-    @Log4j2
+    @Slf4j
     @RestController
     static class TestController {
 

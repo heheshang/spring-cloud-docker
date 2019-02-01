@@ -19,12 +19,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <exclusions>
+     <!--       <exclusions>
                 <exclusion>
                     <artifactId>spring-boot-starter-logging</artifactId>
                     <groupId>org.springframework.boot</groupId>
                 </exclusion>
-            </exclusions>
+            </exclusions>-->
         </dependency>
 
         <dependency>
@@ -44,13 +44,13 @@
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/biz.paluch.logging/logstash-gelf -->
-        <dependency>
+      <!--  <dependency>
             <groupId>org.graylog2.log4j2</groupId>
             <artifactId>log4j2-gelf</artifactId>
             <version>1.3.0</version>
         </dependency>
 
-        <!-- Log4j2 异步支持 -->
+        &lt;!&ndash; Log4j2 异步支持 &ndash;&gt;
         <dependency>
             <groupId>com.lmax</groupId>
             <artifactId>disruptor</artifactId>
@@ -59,8 +59,32 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-log4j2</artifactId>
+        </dependency>-->
+
+        <!--logback-->
+        <dependency>
+            <groupId>com.github.pukkaone</groupId>
+            <artifactId>logback-gelf</artifactId>
+            <version>1.1.9</version>
         </dependency>
 
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>1.1.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.1.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-access</artifactId>
+            <version>1.1.6</version>
+        </dependency>
 
     </dependencies>
 

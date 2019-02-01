@@ -23,7 +23,7 @@ docker-compose -f $DIR/docker-compose.yml stop
 
 # Start container cluster
 # First start persistence and auth container and wait for it
-docker-compose -f $DIR/docker-compose.yml up -d elasticsearch logstash kibana nacos
+docker-compose -f $DIR/docker-compose.yml up -d elasticsearch  kibana graylog2 nacos
 echo "Waiting for persistence init..."
 sleep 30
 

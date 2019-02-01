@@ -367,6 +367,8 @@ docker.io   docker.io/mashape/jenkins                        Just a jenkins imag
 
 - 9 [**使用graylog来收集你的Docker日志**](https://www.jianshu.com/p/25e310596559)
 
+- 10 [**使用 docker-compose.yml 定义多容器应用程序**](https://docs.microsoft.com/zh-cn/dotnet/standard/microservices-architecture/multi-container-microservice-net-applications/multi-container-applications-docker-compose)
+
 ## **要获取所有容器名称及其IP地址只需一个命令**
 ```bash
 docker inspect -f '{{.Name}} - {{.NetworkSettings.IPAddress }}' $(docker ps -aq)

@@ -365,6 +365,8 @@ docker.io   docker.io/mashape/jenkins                        Just a jenkins imag
 
 - 8 [**解决docker下找不到 elasticsearch:latest**](https://blog.csdn.net/weixin_40161254/article/details/85795941)
 
+- 9 [**使用graylog来收集你的Docker日志**](https://www.jianshu.com/p/25e310596559)
+
 ## **要获取所有容器名称及其IP地址只需一个命令**
 ```bash
 docker inspect -f '{{.Name}} - {{.NetworkSettings.IPAddress }}' $(docker ps -aq)

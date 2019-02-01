@@ -2,7 +2,6 @@ package com.nacos.client.scheduler;
 
 import com.alibaba.nacos.common.util.UuidUtil;
 import lombok.extern.log4j.Log4j2;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
@@ -16,7 +15,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -24,7 +22,7 @@ import org.springframework.web.client.RestTemplate;
  * @version v1.0
  * @date 2019-01-31-上午 9:55
  */
-@Slf4j
+@Log4j2
 @Component
 public class TestELKScheduler {
 

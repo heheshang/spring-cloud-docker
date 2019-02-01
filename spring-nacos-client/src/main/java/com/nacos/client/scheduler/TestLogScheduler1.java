@@ -16,7 +16,7 @@ import org.springframework.web.client.RestTemplate;
  */
 @Log4j2
 @Component
-public class TestLogScheduler {
+public class TestLogScheduler1 {
 
     @Autowired
     LoadBalancerClient loadBalancerClient;
@@ -27,12 +27,7 @@ public class TestLogScheduler {
 
         try {
             log.info("未开奖订单回收定时器:开始回收出票中的订单");
-            // 通过spring cloud common中的负载均衡接口选取服务提供节点实现接口调用
-            ServiceInstance serviceInstance = loadBalancerClient.choose("spring-nacos-server");
-            String url = serviceInstance.getUri() + "/hello?name=" + "didi";
-            RestTemplate restTemplate = new RestTemplate();
-            String result = restTemplate.getForObject(url, String.class);
-            log.info("Invoke : " + url + ", return : " + result);
+
         } catch (Exception e) {
             log.error("请求数据异常");
             e.printStackTrace();
